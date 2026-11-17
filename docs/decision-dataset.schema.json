@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Snipra decision evaluation human labels v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["video_id", "segment_id", "human_labels"],
+  "properties": {
+    "video_id": {"type": "string", "minLength": 1},
+    "segment_id": {"type": "string", "minLength": 1},
+    "human_labels": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "quality": {"type": "string", "minLength": 1},
+        "content_type": {"type": "string", "minLength": 1},
+        "keep": {"type": "boolean"}
+      }
+    },
+    "evidence_refs": {"type": "array", "items": {"type": "string"}},
+    "schema_version": {"const": "1"}
+  }
+}

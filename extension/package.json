@@ -1,0 +1,16 @@
+{
+  "name": "snipra-extension-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Dev-only test infrastructure for Snipra browser extension video detection",
+  "scripts": {
+    "test": "node tests/video-detection.test.js && node tests/job-options.test.cjs && node --test tests/instagram-popup.test.cjs",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "jsdom": "^30.1.0",
+    "eslint": "^10.3.0",
+    "@eslint/js": "^10.0.1",
+    "globals": "^17.6.0"
+  }
+}

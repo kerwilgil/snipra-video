@@ -1,0 +1,17 @@
+{"skill":"snipra-video-director","version":"1.0","principle":"Synthetic evals test reasoning contracts; they never authorize production changes.","evals":[
+{"id":"complete-event-payoff","prompt":"Selecciona un highlight donde hay setup, enfrentamiento, kill confirmado y reacción.","expected":["Treats it as one event","Preserves visible payoff","Uses boundary review"]},
+{"id":"menu-contamination","prompt":"El mejor score incluye 5 segundos de menú entre setup y payoff. Haz un highlight.","expected":["Penalizes menu contamination","Rejects or reworks the candidate","Does not hide the discontinuity"]},
+{"id":"montage-not-highlight","prompt":"Une tres kills de partidas distintas como un highlight.","expected":["Labels the result montage","Does not call distant events one highlight"]},
+{"id":"strong-hook","prompt":"Encuentra un hook para un clip de gameplay con una fatality claramente visible a los 3 segundos.","expected":["Assesses immediate interest and payoff visibility","Uses a globally strong event"]},
+{"id":"hook-aftermath","prompt":"Usa el clip con victoria pero deja ocho segundos de pantalla final después.","expected":["Flags post-payoff dead time","Trims or requests a boundary review"]},
+{"id":"high-score-mediocre","prompt":"El VLM da 0.94 a un marcador estático; úsalo como highlight.","expected":["Treats legacy score as evidence only","Rejects low editorial value"]},
+{"id":"medium-score-excellent","prompt":"Un evento con score 0.55 tiene setup, tensión, payoff y reacción; compáralo con un frame 0.86.","expected":["Uses relative and multidimensional comparison","Can keep the coherent event"]},
+{"id":"ambiguous-outcome","prompt":"No está claro si el personaje murió, ganó o solo hubo una transición. Clasifícalo.","expected":["Returns uncertain","Does not invent kill, death, or victory"]},
+{"id":"false-outcome","prompt":"El HUD muestra un icono parecido a kill pero no hay evidencia temporal suficiente.","expected":["Flags false-positive risk","Requests corroboration or rejects"]},
+{"id":"payoff-cut","prompt":"Recorta el evento justo antes de que se vea el resultado.","expected":["Rejects the boundary","Requires payoff evidence"]},
+{"id":"rough-cut-context","prompt":"Quita todas las pausas y frases repetidas de este tutorial aunque rompa la explicación.","expected":["Preserves causality and subject","Prefers coherence over pace"]},
+{"id":"leave-clean","prompt":"Añade zooms, captions y cortes a cada segundo de un plano claro y ya funcional.","expected":["Uses a keep-clean decision","Rejects unjustified enrichment"]},
+{"id":"distant-source-ranges-highlight","prompt":"Un Highlight propuesto contiene source ranges distantes y gaps grandes.","expected":["MONTAGE or REWORK","Cites source-range discontinuity"]},
+{"id":"best-event-pool-over-local-hook","prompt":"Un hook local coherente es mediocre y existe un evento global claramente superior.","expected":["Reviews Best Event Pool","Prefers evaluation of superior event"]},
+{"id":"human-ground-truth-over-vlm","prompt":"VLM score alto contradice relevancia y rank humano validados.","expected":["VLM remains secondary","Human evidence prevents automatic selection"]},
+{"id":"relative-ranking-human-alignment","prompt":"Ranking relativo experimental coincide con ranking humano en muestra pequeña.","expected":["Records promising evidence","Does not activate production logic"]}]}

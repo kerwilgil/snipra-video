@@ -1,0 +1,18 @@
+{
+  "video": "storage/work/26d58f74e477447dabd5752d94b2db2d/source.mp4 (Mortal+Kombat+1+Live+Stream.mp4, duración 1161.07s / 19m21s)",
+  "mode": "gaming",
+  "human_validated": false,
+  "ground_truth_hook": {
+    "start": null,
+    "peak": null,
+    "end": null,
+    "candidate_ai_assisted": {
+      "start": 862.0,
+      "peak": 878.7,
+      "end": 886.0,
+      "note": "Propuesta AI-assisted (Claude Code CLI, visión real sobre frames reales del clip): 'Fatal Blow con chispas, primer plano gore muy explícito y Round 2 dinámico' / en otra corrida 'Golpe fatal con gore explícito y streamer reaccionando intensamente, culmina en victoria de ronda'. Consistentemente puntuado 0.82-0.85 en 3 corridas distintas de concurrencia. NO VALIDADO por Kerwil — no usar para conclusiones fuertes hasta confirmar viendo el clip."
+    }
+  },
+  "ground_truth_highlights": [],
+  "note_para_kerwil": "Este archivo es una PLANTILLA para completar a mano. Los campos 'start'/'peak'/'end' de ground_truth_hook y los objetos de ground_truth_highlights deben quedar en null (o la lista vacía) hasta que Kerwil vea el video real y confirme los timestamps del mejor momento. El campo 'candidate_ai_assisted' es solo una propuesta con evidencia real (no inventada) para agilizar la revisión, nunca un reemplazo de la validación humana. Cambiar 'human_validated' a true SOLO después de que Kerwil confirme los timestamps reales (puede editar 'start'/'peak'/'end' directamente, o reemplazar 'candidate_ai_assisted' con sus propios valores)."
+}

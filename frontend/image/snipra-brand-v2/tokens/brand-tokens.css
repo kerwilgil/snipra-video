@@ -1,0 +1,21 @@
+:root {
+  --snipra-cyan: #00D1FF;
+  --snipra-blue: #3B82FF;
+  --snipra-purple: #8B5CFF;
+  --snipra-violet: #A855F7;
+  --snipra-dark: #0B0F1A;
+  --snipra-surface: #111827;
+  --snipra-border: #1F2937;
+  --snipra-text: #F9FAFB;
+  --snipra-muted: #9CA3AF;
+
+  --snipra-brand-gradient:
+    linear-gradient(135deg,
+      #00D1FF 0%,
+      #3B82FF 45%,
+      #8B5CFF 78%,
+      #A855F7 100%);
+
+  --snipra-font-ui:
+    Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}

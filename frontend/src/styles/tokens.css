@@ -1,0 +1,98 @@
+:root {
+  /* Identidad de marca V2 y superficies neutras para el producto. */
+  --snipra-brand-cyan: #00D1FF;
+  --snipra-brand-blue: #3B82FF;
+  --snipra-brand-purple: #8B5CFF;
+  --snipra-brand-violet: #A855F7;
+  --snipra-brand-gradient: linear-gradient(135deg, #00D1FF 0%, #3B82FF 45%, #8B5CFF 78%, #A855F7 100%);
+  --snipra-brand-font-ui: var(--font-display);
+  color-scheme: dark;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --app-sidebar-width: 290px;
+  --app-topbar-height: 82px;
+  --app-inspector-width: 472px;
+  --control-height: 42px;
+  --button-height: 40px;
+  --radius-control: 8px;
+  --radius-thumbnail: 10px;
+  --radius-card: 14px;
+  --radius-panel: 12px;
+  --radius-preview: 14px;
+  --card-gap: var(--space-3);
+  --card-action-space: 48px;
+  --page-gutter: var(--space-8);
+  --page-max-width: 1440px;
+  --section-gap: var(--space-6);
+  --control-gap: var(--space-3);
+  --snipra-tab-active-bg: #08bce9;
+  --snipra-tab-active-text: #03151f;
+  --snipra-base: #0d0d0f;
+  --snipra-surface: #171719;
+  --snipra-panel: #1b1b1e;
+  --snipra-raised: #252528;
+  --snipra-border: #2a2a2e;
+  --snipra-border-strong: #3a3a3f;
+  --snipra-text: #f0f0f2;
+  --snipra-text-soft: #c1c1c6;
+  --snipra-text-muted: #929298;
+  --snipra-primary: #0787ff;
+  --snipra-primary-hover: #1597ff;
+  --snipra-success: #12c895;
+  --snipra-warning: #f0b849;
+  --snipra-danger: #f16e7a;
+  --snipra-selected: #202a33;
+  --snipra-selected-surface: color-mix(in srgb, var(--snipra-selected) 28%, var(--snipra-surface));
+  --snipra-selected-border: #05bce9;
+  --snipra-shadow: 0 12px 28px rgb(0 0 0 / 25%);
+  --snipra-preview: #050505;
+
+  /* Keep existing Tailwind utilities and legacy editor styles on shared semantics. */
+  --color-base: var(--snipra-base);
+  --color-surface: var(--snipra-surface);
+  --color-raised: var(--snipra-raised);
+  --color-panel: var(--snipra-panel);
+  --color-subtle: var(--snipra-raised);
+  --color-border: var(--snipra-border);
+  --color-border-strong: var(--snipra-border-strong);
+  --color-ink: var(--snipra-text);
+  --color-ink-soft: var(--snipra-text-soft);
+  --color-ink-mute: var(--snipra-text-muted);
+  --color-cyan: #05bce9;
+  --color-blue: var(--snipra-primary);
+  --color-violet: #9b82f4;
+  --color-amber: var(--snipra-warning);
+  --color-good: var(--snipra-success);
+  --color-bad: var(--snipra-danger);
+  --color-warn: var(--snipra-warning);
+  --font-display: 'Inter Variable', Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+html[data-theme='light'] {
+  color-scheme: light;
+  --snipra-base: #f3f3f4;
+  --snipra-surface: #fafafa;
+  --snipra-panel: #f6f6f7;
+  --snipra-raised: #ebebed;
+  --snipra-border: #dedee1;
+  --snipra-border-strong: #c4c4c9;
+  --snipra-text: #242428;
+  --snipra-text-soft: #515158;
+  --snipra-text-muted: #74747c;
+  --snipra-primary: #0876dc;
+  --snipra-primary-hover: #0869c5;
+  --snipra-success: #087e60;
+  --snipra-warning: #9a6500;
+  --snipra-danger: #c33e4b;
+  --snipra-selected: #e5f1f7;
+  --snipra-selected-surface: color-mix(in srgb, var(--snipra-selected) 42%, var(--snipra-surface));
+  --snipra-selected-border: #0786bf;
+  --snipra-shadow: 0 12px 28px rgb(27 52 79 / 12%);
+  --snipra-tab-active-bg: #0876dc;
+  --snipra-tab-active-text: #fff;
+}

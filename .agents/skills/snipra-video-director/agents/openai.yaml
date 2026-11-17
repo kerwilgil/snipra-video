@@ -1,0 +1,4 @@
+interface:
+  display_name: "Snipra Video Director"
+  short_description: "Dirige el análisis editorial, eventos y planes de edición de Snipra."
+  default_prompt: "Usa $snipra-video-director para inspeccionar evidencia, mapear eventos, evaluar coherencia y definir un plan editorial verificable para Hook, Highlight, Montage o Rough Cut."

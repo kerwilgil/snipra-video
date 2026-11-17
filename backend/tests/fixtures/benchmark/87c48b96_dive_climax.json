@@ -1,0 +1,15 @@
+{
+  "video": "storage/work/87c48b966dae4f20a1a3d9d5c7ea52e6/source.mp4 (duración 62.69s, mismo archivo que Downloads/snipra-original-87c48b96.mp4)",
+  "mode": "gaming",
+  "output_type": "hook",
+  "ground_truth": [
+    {
+      "start": 58.0,
+      "peak": 61.0,
+      "end": 62.69,
+      "type": "hook"
+    }
+  ],
+  "annotation_status": "ai_assisted_pending_human_confirmation",
+  "evidence": "Anotado con evidencia real, no inventada: (1) signals.analyze_media() sobre el archivo real detectó el pico de audio más fuerte del clip en t=60-62s (-8.1/-9.6/-10.7 dB, el resto del clip está entre -18 y -40 dB) y un corte de escena en t=58.4s; (2) frames extraídos con ffmpeg en t=58s (plano de oficina, cámara detrás de un mueble) y t=61s (personaje en zambullida de cámara lenta con overlay rojo de pantalla, típico de daño/critico en juegos de acción tipo Max Payne) confirman visualmente un momento de acción distintivo justo donde coinciden ambas señales. Frames en t=12-13s y t=47-54s (resto de picos menores) muestran desplazamiento normal por pasillos/oficinas sin evento distintivo. PENDIENTE: Kerwil debe confirmar viendo el video completo si 58-62.69s es en efecto el mejor momento del clip antes de tratar esto como ground truth definitivo para recalibración de umbrales (P1)."
+}

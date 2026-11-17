@@ -1,0 +1,148 @@
+.app-shell {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: var(--app-sidebar-width) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  background: var(--snipra-base);
+}
+
+.app-workspace {
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  grid-template-rows: var(--app-topbar-height) minmax(0, 1fr);
+}
+
+.app-topbar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  min-width: 0;
+  height: var(--app-topbar-height);
+  align-items: center;
+  gap: var(--space-6);
+  padding: 0 28px 0 var(--space-8);
+  border-bottom: 1px solid var(--snipra-border);
+  background: var(--snipra-panel);
+}
+
+.app-topbar-search {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 120px;
+  max-width: 560px;
+  align-items: center;
+}
+.app-topbar-search:empty { display: none; }
+.project-search {
+  display: flex;
+  width: 100%;
+  height: 44px;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0 13px;
+  border: 1px solid var(--snipra-border);
+  border-radius: var(--radius-panel);
+  background: var(--snipra-raised);
+}
+.project-search:focus-within { border-color: var(--snipra-primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--snipra-primary) 15%, transparent); }
+.project-search svg { width: 19px; height: 19px; flex: 0 0 auto; fill: none; stroke: var(--snipra-text-muted); stroke-width: 1.8; }
+.project-search input { width: 100%; min-width: 0; color: var(--snipra-text); border: 0; outline: 0; background: transparent; font-size: 14px; }
+.project-search input::placeholder { color: var(--snipra-text-muted); }
+
+.app-topbar-title { gap: var(--space-2); }
+.app-topbar-title .topbar-context { color: var(--snipra-text-muted); font-size: 12px; font-weight: 500; }
+.app-topbar-title strong { font-size: 15px; font-weight: 600; }
+.app-topbar-side { margin-left: auto; gap: var(--space-3); }
+.app-status-chip { font-size: 12px; color: var(--snipra-text-soft); }
+.app-topbar-actions { gap: 10px; }
+.app-topbar-actions .project-create { min-height: var(--button-height); }
+.app-topbar-side > button { width: var(--button-height); height: var(--button-height); }
+
+.app-sidebar {
+  z-index: 3;
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  flex-direction: column;
+  border-right: 1px solid var(--snipra-border);
+  background: var(--snipra-panel);
+}
+.app-sidebar-brand {
+  display: flex;
+  height: var(--app-topbar-height);
+  flex: 0 0 auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0 var(--space-6);
+  color: var(--snipra-text);
+  text-decoration: none;
+  border-bottom: 1px solid var(--snipra-border);
+  background: var(--snipra-panel);
+}
+.app-sidebar-brand-logo { display: block; width: 204px; max-width: 100%; height: auto; flex: 0 1 auto; object-fit: contain; }
+.app-sidebar-brand-logo-light, .app-sidebar-brand-logo-white, .app-sidebar-brand-icon { display: none; }
+html:not([data-theme='light']) .app-sidebar-brand-logo-dark { display: none; }
+html:not([data-theme='light']) .app-sidebar-brand-logo-white { display: block; }
+html[data-theme='light'] .app-sidebar-brand-logo-dark { display: none; }
+html[data-theme='light'] .app-sidebar-brand-logo-light { display: block; }
+.app-sidebar-brand:hover { background: var(--snipra-selected-surface); }
+.app-sidebar-brand:focus-visible { outline: 2px solid var(--snipra-primary); outline-offset: -3px; }
+.app-nav { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; padding: 22px 14px; }
+.app-nav a {
+  display: flex;
+  position: relative;
+  min-height: 56px;
+  align-items: center;
+  gap: 18px;
+  padding: 0 24px;
+  color: var(--snipra-text-soft);
+  border: 1px solid transparent;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color .15s ease, border-color .15s ease, color .15s ease;
+}
+.app-nav a:hover { color: var(--snipra-text); background: var(--snipra-raised); }
+.app-nav a.active { color: var(--snipra-text); border-color: color-mix(in srgb, var(--snipra-selected-border) 68%, transparent); background: var(--snipra-selected); font-weight: 600; }
+.app-nav a svg { width: 24px; height: 24px; flex: 0 0 auto; color: var(--snipra-text-muted); }
+.app-nav a.active svg { color: var(--snipra-selected-border); }
+.app-sidebar-footer { display: none; }
+.app-main { min-width: 0; background: var(--snipra-base); }
+
+@media (max-width: 1200px) {
+  .app-shell { grid-template-columns: 248px minmax(0, 1fr); }
+  .app-sidebar-brand { padding-inline: 22px; }
+  .app-nav { padding-inline: 10px; }
+  .app-nav a { padding-inline: 18px; }
+  .app-topbar { padding-inline: 24px; }
+}
+
+@media (max-width: 760px) {
+  .app-shell { grid-template-columns: 64px minmax(0, 1fr); }
+  .app-workspace { grid-template-rows: 64px minmax(0, 1fr); }
+  .app-sidebar-brand { height: 64px; justify-content: center; padding: 0; }
+  .app-sidebar-brand-logo { display: none !important; }
+  .app-sidebar-brand-icon { display: block; width: 32px; height: 32px; flex: 0 0 auto; object-fit: contain; }
+  .app-nav a span { display: none; }
+  .app-nav { gap: 8px; padding: 14px 7px; }
+  .app-nav a { min-height: 48px; justify-content: center; padding: 0; }
+  .app-nav a svg { width: 22px; height: 22px; }
+  .app-topbar { height: 64px; gap: 10px; padding: 0 12px; }
+  .app-topbar-side { min-width: 0; max-width: 100%; flex: 0 1 auto; gap: 7px; }
+  .app-topbar-actions { overflow-x: auto; }
+  .app-topbar-actions > *, .app-topbar-side > button { flex-shrink: 0; }
+  .app-topbar-actions .project-create { width: 40px; min-height: var(--button-height); overflow: hidden; justify-content: flex-start; padding: 0 11px; font-size: 0; }
+  .app-topbar-actions .project-create svg { width: 18px; height: 18px; flex: 0 0 auto; }
+  .app-topbar-title { display: none; }
+  .project-search { height: 40px; gap: 7px; padding-inline: 9px; }
+  .project-search input { font-size: 12px; }
+}
+
+@media (max-width: 440px) {
+  .app-shell { grid-template-columns: 56px minmax(0, 1fr); }
+  .app-topbar-actions .project-create { width: 38px; min-height: var(--button-height); }
+  .app-topbar-side .app-status-chip { display: none; }
+}

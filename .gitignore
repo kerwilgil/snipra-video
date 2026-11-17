@@ -1,0 +1,77 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Env / secrets
+.env
+*.local
+
+# Local downloader/browser session secrets
+/backend/cookies.txt
+cookies.txt
+*.cookies.txt
+
+# Datos / artefactos locales (jobs, ajustes, BD, logs, tests y caches)
+storage/
+*.db
+*.sqlite3
+*.log
+
+# Modelos descargados (whisper / yolo)
+*.pt
+models_cache/
+
+# Node / frontend
+node_modules/
+frontend/dist/
+frontend/.vite/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+*.lnk
+
+# clon opcional de bgutil-ytdlp-pot-provider (PO Token para YouTube), no forma
+# parte del codigo fuente de Snipra -- ver context-snipra.md para setup/estado
+pot-provider/
+
+# Artefactos de empaquetado (package-snipra-release.sh/.ps1)
+dist-release/
+
+# Migration exclusions: runtime, QA, builds, private sessions and local data.
+artifacts/qa/
+storage/
+*.mp4
+*.mkv
+*.mov
+*.webm
+*.mp3
+*.wav
+*.m4a
+*.flac
+*.opus
+.env.*
+!.env.example
+*.cookies.*
+Cookies
+Cookies-journal
+Network/Cookies*
+*.sqlite
+*.db-wal
+*.db-shm
+dist/
+build/
+.cache/
+coverage/
+.playwright-cli/
+*.tmp
+*.temp
+*.bak

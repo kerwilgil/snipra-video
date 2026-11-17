@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Snipra</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main>
+      <header class="header">
+        <div class="brand">
+          <img src="icons/icon48.png" alt="" />
+          <div>
+            <h1>Snipra</h1>
+            <p class="tagline">Detecta · Envía · Descarga</p>
+          </div>
+        </div>
+        <div id="healthState" class="health" title="Estado del backend local">
+          <span class="dot"></span>
+          <span id="healthText">Conectando...</span>
+        </div>
+      </header>
+
+      <section id="pairSection" class="card pair-card">
+        <p>Autorizar extensión en Snipra local</p>
+        <button id="btnPair" class="secondary-button" type="button">Conectar</button>
+        <div id="pairStatus"></div>
+      </section>
+      <div id="connectedNote" hidden>✓ Extensión emparejada</div>
+
+      <section class="card">
+        <span class="source-label">Pestaña activa</span>
+        <div id="url" title="">Detectando pestaña activa...</div>
+      </section>
+
+      <section id="detectionSection" class="card" hidden>
+        <span class="source-label">Detección de video</span>
+        <div id="detectionStatus" class="detection-status"></div>
+        <div id="detectionDetails" class="detection-details"></div>
+        <div id="detectionCandidates" class="detection-candidates"></div>
+      </section>
+
+      <form id="jobForm" class="card">
+        <div class="output-tabs" role="group" aria-label="Modo de salida">
+          <button class="output-tab" type="button" data-output="clips" aria-pressed="true">Clips</button>
+          <button class="output-tab" type="button" data-output="download" aria-pressed="false">Descargar</button>
+          <button class="output-tab" type="button" data-output="audio" aria-pressed="false">Audio</button>
+        </div>
+
+        <div id="qualityPanel" class="field">
+          <label class="field-label" for="qualitySelect">Calidad</label>
+          <select id="qualitySelect">
+            <option value="auto">Auto — mejor</option>
+            <option value="720">Hasta 720p</option>
+            <option value="1080">Hasta 1080p</option>
+            <option value="1440">Hasta 1440p (2K)</option>
+            <option value="2160">Hasta 2160p (4K)</option>
+          </select>
+        </div>
+
+        <div id="audioPanel" class="field" hidden>
+          <label class="field-label" for="audioFormatSelect">Formato de audio</label>
+          <select id="audioFormatSelect">
+            <option value="mp3">MP3</option>
+            <option value="wav">WAV — sin compresión</option>
+            <option value="m4a">M4A</option>
+            <option value="opus">Opus</option>
+            <option value="flac">FLAC — sin pérdida</option>
+          </select>
+        </div>
+
+        <div id="clipsPanel">
+          <div class="field">
+            <label class="field-label" for="processingModeSelect">Contenido</label>
+            <select id="processingModeSelect">
+              <option value="auto_smart">Auto</option>
+              <option value="podcast_viral">Podcast / Entrevista</option>
+              <option value="vlog">Vlog / Directo a cámara</option>
+              <option value="gaming">Gaming</option>
+              <option value="tutorial_screen">Tutorial / Educativo</option>
+              <option value="music">Música / Ambiental</option>
+              <option value="keep_original">Conservar encuadre</option>
+            </select>
+          </div>
+
+          <details id="advancedOptions">
+            <summary>Opciones de clips</summary>
+            <div class="clip-options-panel">
+              <div id="gamingPanel" class="field" hidden>
+                <label class="field-label" for="gamingOutputSelect">Resultado gaming</label>
+                <select id="gamingOutputSelect">
+                  <option value="auto">Automático — Snipra decide</option>
+                  <option value="clips">Clips independientes</option>
+                  <option value="hook">Hook de 8–25 s</option>
+                  <option value="highlights">Highlights de 30–45 s</option>
+                </select>
+                <p id="gamingHint" class="hint">Snipra elegirá entre clips, hook o highlights según los eventos detectados.</p>
+              </div>
+
+              <div class="field-row field">
+                <div>
+                  <label class="field-label" for="numClipsInput">Cantidad</label>
+                  <input id="numClipsInput" type="number" min="1" max="12" step="1" value="5" />
+                </div>
+                <div>
+                  <span class="field-label">Formatos</span>
+                  <div class="formats">
+                    <label class="format-option"><input type="checkbox" name="format" value="9x16" checked /><span>9:16</span></label>
+                    <label class="format-option"><input type="checkbox" name="format" value="1x1" /><span>1:1</span></label>
+                    <label class="format-option"><input type="checkbox" name="format" value="16x9" /><span>16:9</span></label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="toggle-row field">
+                <div class="toggle-copy">
+                  <strong id="captionsLabel">Subtítulos quemados</strong>
+                  <small>Usa el estilo configurado en Snipra</small>
+                </div>
+                <label class="switch">
+                  <input id="captionsToggle" type="checkbox" aria-labelledby="captionsLabel" checked />
+                  <span aria-hidden="true"></span>
+                </label>
+              </div>
+
+              <div class="toggle-row field">
+                <div class="toggle-copy">
+                  <strong id="compactEditingLabel">Edición compacta</strong>
+                  <small>Quita pausas y primeras tomas repetidas en Podcast/Vlog</small>
+                </div>
+                <label class="switch">
+                  <input id="compactEditingToggle" type="checkbox" aria-labelledby="compactEditingLabel" />
+                  <span aria-hidden="true"></span>
+                </label>
+              </div>
+
+              <div class="toggle-row field">
+                <div class="toggle-copy">
+                  <strong id="semanticCardsLabel">Tarjetas verificadas</strong>
+                  <small>Contrastes y consecuencias respaldados por el transcript</small>
+                </div>
+                <label class="switch">
+                  <input id="semanticCardsToggle" type="checkbox" aria-labelledby="semanticCardsLabel" />
+                  <span aria-hidden="true"></span>
+                </label>
+              </div>
+
+              <div class="toggle-row field">
+                <div class="toggle-copy">
+                  <strong id="privacyAssistLabel">Privacidad por OCR</strong>
+                  <small>Sólo sugiere; se confirma después en Snipra</small>
+                </div>
+                <label class="switch">
+                  <input id="privacyAssistToggle" type="checkbox" aria-labelledby="privacyAssistLabel" />
+                  <span aria-hidden="true"></span>
+                </label>
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="transcriptionQualitySelect">Transcripción</label>
+                <select id="transcriptionQualitySelect">
+                  <option value="default">Predeterminada</option>
+                  <option value="fast">Rápida</option>
+                  <option value="balanced">Equilibrada</option>
+                  <option value="precise">Precisa</option>
+                </select>
+              </div>
+            </div>
+          </details>
+        </div>
+
+        <button id="submitButton" class="primary-button field" type="submit">Crear clips</button>
+        <div id="status" role="status" aria-live="polite"></div>
+        <a id="downloadFile" class="secondary-button download-file" hidden>Guardar archivo</a>
+      </form>
+
+      <details id="tokenSection" class="token-details">
+        <summary>Token manual</summary>
+        <p class="hint">Alternativa al emparejamiento de un clic. El valor queda guardado solo en esta extensión.</p>
+        <form id="tokenForm" class="token-form">
+          <input id="tokenInput" type="password" placeholder="Token de extensión" autocomplete="off" spellcheck="false" />
+          <button class="secondary-button" type="submit">Guardar</button>
+        </form>
+      </details>
+
+      <footer class="footer">
+        <span id="extensionVersion">Extensión · Solo local</span>
+        <a id="openSnipra" href="#">Abrir Snipra ↗</a>
+      </footer>
+    </main>
+
+    <script src="job-options.js"></script>
+    <script src="video-detection.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>
