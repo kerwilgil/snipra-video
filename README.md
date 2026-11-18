@@ -10,7 +10,6 @@
 
 <p align="center">
   <img src="docs/assets/badges/header-version.png" height="20" alt="Versión 1.0.0">
-  <img src="docs/assets/badges/header-estado.png" height="20" alt="Pre-release">
   <img src="docs/assets/badges/header-flujo.png" height="20" alt="Local-first">
 </p>
 
@@ -23,7 +22,15 @@
   <a href="#validación-y-limitaciones">Pruebas</a>
 </p>
 
-> **Snipra 1.0.0 · Código fuente público para escritorio.** La aplicación se ejecuta localmente. Aún no hay una release binaria oficial ni instaladores firmados.
+> **Snipra 1.0.0 · macOS Apple Silicon (arm64).** Descarga `Snipra.app` desde [Releases](https://github.com/kerwilgil/snipra-video/releases/tag/v1.0.0). La app **no está notarizada** (firma ad hoc): macOS pedirá autorizarla manualmente. Windows se ejecuta desde el código fuente.
+
+### Descargar para macOS (Apple Silicon)
+
+1. Descarga `snipra-macos-1.0.0-arm64.zip` y verifica su SHA-256 con `SHA256SUMS`: `shasum -a 256 -c SHA256SUMS`.
+2. Descomprime, arrastra `Snipra.app` a `/Applications` y ábrela. macOS la bloqueará: ve a **Ajustes del Sistema → Privacidad y seguridad → Abrir igualmente**.
+3. Requisitos: Mac con chip Apple Silicon (M1 o posterior) y macOS 27.0 o superior. **No funciona en Intel.**
+4. Es una build sin Developer ID ni notarización. No desactives Gatekeeper; sigue la guía [`docs/INSTALL_MACOS.md`](docs/INSTALL_MACOS.md).
+5. Licencias y código fuente: la app incluye FFmpeg (GPL-3.0-or-later) y otras bibliotecas. Los avisos van en `LICENSES/` y el código fuente correspondiente es `snipra-macos-1.0.0-corresponding-source.zip` en la misma release. Detalle y límites: [`docs/LICENSE_COMPLIANCE.md`](docs/LICENSE_COMPLIANCE.md) (sin revisión jurídica; patentes de códecs no evaluadas).
 
 Snipra es una aplicación **local-first** para importar archivos o URLs compatibles, analizar medios, producir clips en varios formatos, componer videos y revisar la calidad de salida. El procesamiento principal y los datos de trabajo residen en el equipo. Los proveedores de IA externos son **optativos** y solo se utilizan cuando se configuran y seleccionan explícitamente.
 
@@ -132,7 +139,7 @@ Toda la arquitectura técnica: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 | Plataforma | Alcance |
 |---|---|
 | Windows | Ejecución de escritorio desde el código fuente. |
-| macOS Apple Silicon | Scripts de empaquetado. Distribuir el binario requiere revisar licencias, firmar y notarizar. |
+| macOS Apple Silicon | `Snipra.app` arm64 en [Releases](https://github.com/kerwilgil/snipra-video/releases/tag/v1.0.0). Firma ad hoc, **sin notarización**: autorización manual en Gatekeeper. |
 | macOS Intel y Linux | Sin distribución nativa oficial. |
 | Chromium | Extensión descomprimida para Chrome, Edge y Brave con la API local activa. |
 
@@ -250,4 +257,4 @@ Licencia del código fuente: [MIT](LICENSE). Los componentes de terceros conserv
 
 ---
 
-<p align="center"><strong>Snipra 1.0.0 · Local-first · Código fuente público · Sin release binaria oficial</strong></p>
+<p align="center"><strong>Snipra 1.0.0 · Local-first · Código fuente público · macOS arm64 sin notarizar</strong></p>
