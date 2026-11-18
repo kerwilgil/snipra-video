@@ -17,8 +17,10 @@
 #   "Developer ID Application: ..."  firma de distribución con Hardened Runtime y sello de tiempo.
 #   "Apple Development: ..."         solo pruebas locales de Hardened Runtime; no distribuible.
 # Notarización: si hay Developer ID y SNIPRA_NOTARY_PROFILE, se ejecuta scripts/macos/notarize.sh.
-# Modalidad: SNIPRA_MACOS_BUILD_MODE=private (por defecto, sin Developer ID) o
-#            SNIPRA_MACOS_BUILD_MODE=distribution (requiere Developer ID, notarización y Gatekeeper).
+# Modalidad: SNIPRA_MACOS_BUILD_MODE=private (por defecto, sin Developer ID),
+#            SNIPRA_MACOS_BUILD_MODE=public-adhoc (distribución pública NO notarizada: firma ad hoc,
+#              el usuario autoriza Gatekeeper manualmente; nunca se presenta como notarizada) o
+#            SNIPRA_MACOS_BUILD_MODE=distribution (oficial: requiere Developer ID, notarización y Gatekeeper).
 # Ninguna modalidad crea un tag ni publica la release 1.0.0.
 #
 # Uso: scripts/macos/build-macos-app.sh
@@ -49,7 +51,12 @@ die() { printf 'ERROR: %s\n' "$*" >&2; exit 1; }
 
 # ---------------------------------------------------------------- preflight
 log "Preflight"
-[[ "$BUILD_MODE" == "private" || "$BUILD_MODE" == "distribution" ]] || die "SNIPRA_MACOS_BUILD_MODE debe ser 'private' o 'distribution'."
+[[ "$BUILD_MODE" == "private" || "$BUILD_MODE" == "public-adhoc" || "$BUILD_MODE" == "distribution" ]] \
+  || die "SNIPRA_MACOS_BUILD_MODE debe ser 'private', 'public-adhoc' o 'distribution'."
+if [[ "$BUILD_MODE" == "public-adhoc" ]]; then
+  [[ "$SIGN_IDENTITY" == "-" ]] || die "public-adhoc exige firma ad hoc (sin SNIPRA_CODESIGN_IDENTITY); use 'distribution' para Developer ID."
+  [[ "$FFMPEG_SOURCE" == "sequoia" ]] || die "public-adhoc exige los bottles verificados (SNIPRA_FFMPEG_SOURCE=sequoia)."
+fi
 if [[ "$BUILD_MODE" == "distribution" ]]; then
   [[ "$SIGN_IDENTITY" == "Developer ID Application:"* ]] || die "Distribución bloqueada: requiere SNIPRA_CODESIGN_IDENTITY con Developer ID Application."
   [[ -n "${SNIPRA_NOTARY_PROFILE:-}" ]] || die "Distribución bloqueada: falta SNIPRA_NOTARY_PROFILE en el Keychain."
@@ -110,7 +117,25 @@ log "Dependencias de backend (uv.lock, con hashes)"
 UV_CACHE_DIR="$CACHE/uv-cache" uv pip install --python "$PY" --break-system-packages --no-config \
   --require-hashes --quiet -r "$RES/requirements-lock.txt"
 find "$RES/python/lib/python3.11/site-packages" -name '*.exe' -delete
-"$PY" -c "import fastapi, uvicorn, faster_whisper, yt_dlp, curl_cffi, av, ctranslate2, jsonschema" \
+# PyAV trae FFmpeg con libx264/libx265 (GPL) que se cargarían dentro del proceso del backend.
+# Snipra decodifica el audio con el ffmpeg externo y pasa el array a faster-whisper, así que PyAV
+# no se distribuye: se sustituye por un stub inerte (faster_whisper solo hace `import av`).
+SITE="$RES/python/lib/python3.11/site-packages"
+rm -rf "$SITE/av" "$SITE"/av-*.dist-info "$SITE"/av.libs
+mkdir -p "$SITE/av"
+cat > "$SITE/av/__init__.py" <<'PYSTUB'
+"""Stub de Snipra: PyAV no se distribuye (sus bibliotecas FFmpeg incluyen x264/x265, GPL).
+
+Snipra decodifica el audio con el ffmpeg externo y no usa faster_whisper.audio.decode_audio.
+"""
+
+
+def __getattr__(name):
+    raise ImportError(
+        f"PyAV no se distribuye con Snipra (av.{name}); el audio se decodifica con ffmpeg externo."
+    )
+PYSTUB
+"$PY" -c "import fastapi, uvicorn, faster_whisper, yt_dlp, curl_cffi, ctranslate2, jsonschema" \
   || die "Las dependencias no se importan desde el runtime empaquetado."
 
 # ---------------------------------------------------------------- FFmpeg (bottles macOS 15)
@@ -236,6 +261,10 @@ if [[ "$SIGN_IDENTITY" == Developer\ ID\ Application* ]]; then
   fi
 elif [[ "$SIGN_IDENTITY" != "-" ]]; then
   SIGNING_STATUS="apple-development-local-only"
+fi
+if [[ "$BUILD_MODE" == "public-adhoc" ]]; then
+  [[ "$SIGNING_STATUS" == "ad-hoc" ]] || die "public-adhoc exige firma ad hoc."
+  NOTARY_STATUS="NOT_NOTARIZED"
 fi
 if [[ "$BUILD_MODE" == "distribution" && "$NOTARY_STATUS" != "ACCEPTED" ]]; then
   die "Distribución bloqueada: el bundle no tiene notarización y Gatekeeper verificados."

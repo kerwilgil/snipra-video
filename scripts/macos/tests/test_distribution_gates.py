@@ -118,6 +118,23 @@ esac
         self.assertNotEqual(proc.returncode, 0)
         self.assertIn("SNIPRA_MACOS_BUILD_MODE debe ser", proc.stderr)
 
+    def test_public_adhoc_rejects_developer_id_identity(self) -> None:
+        proc = self.run_script(BUILD, {"SNIPRA_MACOS_BUILD_MODE": "public-adhoc",
+                                       "SNIPRA_CODESIGN_IDENTITY": "Developer ID Application: QA (TESTTEAM)"})
+        self.assertNotEqual(proc.returncode, 0)
+        self.assertIn("public-adhoc exige firma ad hoc", proc.stderr)
+
+    def test_public_adhoc_requires_verified_bottles(self) -> None:
+        proc = self.run_script(BUILD, {"SNIPRA_MACOS_BUILD_MODE": "public-adhoc",
+                                       "SNIPRA_FFMPEG_SOURCE": "local"})
+        self.assertNotEqual(proc.returncode, 0)
+        self.assertIn("bottles verificados", proc.stderr)
+
+    def test_public_adhoc_never_relaxes_official_distribution_mode(self) -> None:
+        text = BUILD.read_text(encoding="utf-8")
+        self.assertIn('NOTARY_STATUS="NOT_NOTARIZED"', text)
+        self.assertIn('"$BUILD_MODE" == "distribution" && "$NOTARY_STATUS" != "ACCEPTED"', text)
+
 
 if __name__ == "__main__":
     unittest.main()

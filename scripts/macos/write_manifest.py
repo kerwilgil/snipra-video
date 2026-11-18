@@ -67,7 +67,7 @@ def main() -> int:
     parser.add_argument("--out", required=True, type=Path)
     parser.add_argument("--signing", default="ad-hoc")
     parser.add_argument("--notarization", default="NOTARIZATION_PENDING")
-    parser.add_argument("--build-mode", choices=("private", "distribution"), default="private")
+    parser.add_argument("--build-mode", choices=("private", "public-adhoc", "distribution"), default="private")
     parser.add_argument("--bottles", type=Path, help="bottles.json de fetch-homebrew-bottles.py")
     args = parser.parse_args()
 
@@ -143,7 +143,14 @@ def main() -> int:
             "hardened_runtime": args.signing in ("developer-id", "apple-development-local-only"),
             "notarization": args.notarization,
             "notarized": args.notarization == "ACCEPTED",
+            "distribution_channel": (
+                "public-adhoc-not-notarized" if args.build_mode == "public-adhoc"
+                else "official-notarized" if args.build_mode == "distribution" else "private-qa"
+            ),
             "gatekeeper_note": (
+                "Distribución pública NO notarizada (firma ad hoc): macOS mostrará una advertencia y el usuario "
+                "debe autorizar la app manualmente en Ajustes del Sistema > Privacidad y seguridad."
+                if args.build_mode == "public-adhoc" else
                 "Firma ad hoc: Gatekeeper la rechaza en otros Macs. Distribuir exige Developer ID y notarización."
                 if args.signing == "ad-hoc" else
                 "Firma de desarrollo: solo para pruebas locales de Hardened Runtime; no distribuible."
@@ -157,7 +164,7 @@ def main() -> int:
             "failed": check["failed"],
             "checks": check["checks"],
         },
-        "release_status": "NOT_PUBLISHED",
+        "release_status": "NOT_PUBLISHED" if args.build_mode != "public-adhoc" else "PUBLIC_ADHOC_CANDIDATE",
     }
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")

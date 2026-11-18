@@ -70,6 +70,7 @@ describe('Media Foundation en SettingsPage', () => {
 
   it('carga defaults, guarda overrides válidos y sigue operativo si diagnóstico falla', async () => {
     mount()
+    expect(screen.getByRole('spinbutton', { name: 'Retencion de archivos (dias; 0 desactiva)' })).toHaveValue(0)
     await screen.findByText(/No se pudo diagnosticar/)
     expect(screen.getByRole('button', { name: 'Destino por defecto' })).toHaveTextContent('TikTok')
     expect(screen.getByRole('button', { name: 'Color HDR' })).toHaveTextContent('Siempre SDR')

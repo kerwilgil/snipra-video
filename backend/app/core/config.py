@@ -33,7 +33,8 @@ class Settings(BaseSettings):
 
     # --- Almacenamiento ---
     storage_dir: Path = PROJECT_DIR / "storage"
-    storage_retention_days: int = 30  # 0 desactiva limpieza automatica de artefactos
+    # 0 = nunca borrar automaticamente; la limpieza solo ocurre si el usuario la activa
+    storage_retention_days: int = 0
     database_url: str = ""  # se autocompleta a sqlite en storage_dir si queda vacío
 
     # --- Proveedor de IA (detección de momentos) ---

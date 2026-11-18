@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import contextlib
 import json
+import wave
 from collections.abc import Callable
 from pathlib import Path
 
@@ -27,6 +28,22 @@ def _get_model(model_name: str | None = None):
             compute_type=settings.whisper_compute_type,
         )
     return _model_cache[key]
+
+
+def load_wav_16k_mono(path: str | Path):
+    """Lee el WAV mono 16 kHz que genera ffmpeg y lo devuelve como float32 en [-1, 1].
+
+    Se pasa a faster-whisper como array para que no decodifique audio con PyAV; asi el
+    backend no carga en su proceso las bibliotecas FFmpeg/x264/x265 (GPL) de PyAV.
+    """
+    import numpy as np
+
+    with wave.open(str(path), "rb") as handle:
+        fmt = (handle.getnchannels(), handle.getsampwidth(), handle.getframerate())
+        if fmt != (1, 2, 16000):
+            raise ValueError("Se esperaba un WAV PCM s16le mono de 16 kHz")
+        raw = handle.readframes(handle.getnframes())
+    return np.frombuffer(raw, dtype=np.int16).astype(np.float32) / 32768.0
 
 
 def segments_path(job_id: str) -> Path:
@@ -68,7 +85,9 @@ def transcribe_job(
     completed_audio = 0.0
     segments = []
     for wav_path, offset, interval_end in wav_paths:
-        seg_iter, info = model.transcribe(str(wav_path), word_timestamps=True, vad_filter=True)
+        seg_iter, info = model.transcribe(
+            load_wav_16k_mono(wav_path), word_timestamps=True, vad_filter=True
+        )
         language = language or info.language
         total_duration = max(total_duration, interval_end or info.duration)
         interval_duration = max(0.1, interval_end - offset) if interval_end else info.duration
