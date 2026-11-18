@@ -384,7 +384,7 @@ export function SettingsPage() {
           />
           <NumberField
             label="Retencion de archivos (dias; 0 desactiva)"
-            value={current.storage_retention_days ?? 30}
+            value={current.storage_retention_days ?? 0}
             min={0}
             max={3650}
             step={1}

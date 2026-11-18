@@ -42,6 +42,8 @@ base. No necesita Homebrew, Node.js, Python ni FFmpeg instalados en el Mac.
 - `MANIFEST.json`: versión, componentes, hashes, estado de firma y resultados de verificación.
 
 El archivo `SHA256SUMS` se distribuye junto al ZIP, no dentro de él.
+La relación entre commit de compilación, tag y hashes publicados se documenta en
+[trazabilidad de 1.0.0](RELEASE_1_0_0_TRACEABILITY.md).
 
 ## Instalación
 

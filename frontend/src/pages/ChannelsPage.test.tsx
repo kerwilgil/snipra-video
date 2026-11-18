@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { cleanup, render, screen } from '@testing-library/react'
 import type { ReactNode } from 'react'
@@ -74,7 +77,9 @@ describe('Canales trackeados: geometría consistente', () => {
   })
 
   it('sujeta vacío y lista al mismo límite CSS de 1200 px que el resumen', () => {
-    const stylesheet = readFileSync(resolve(process.cwd(), 'src/styles/page-layout.css'), 'utf8')
+    const stylesheet = readFileSync(
+      resolve(dirname(fileURLToPath(import.meta.url)), '../styles/page-layout.css'), 'utf8',
+    )
     const sharedRule = stylesheet.match(
       /\.channels-page > \.channels-header,[\s\S]*?\{ width: 100%; max-width: 1200px; \}/,
     )?.[0]
@@ -84,5 +89,3 @@ describe('Canales trackeados: geometría consistente', () => {
     expect(sharedRule).toContain('.channels-page > .channels-list,')
   })
 })
-import { readFileSync } from 'node:fs'
-import { resolve } from 'node:path'

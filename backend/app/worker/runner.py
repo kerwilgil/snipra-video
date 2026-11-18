@@ -881,7 +881,8 @@ def _run_loop() -> None:
             flush=True,
         )
     print("[worker] Snipra worker iniciado. Esperando jobs…", flush=True)
-    last_maintenance = 0.0
+    # Nunca limpiar al iniciar: el primer mantenimiento ocurre tras un intervalo completo.
+    last_maintenance = time.monotonic()
     last_channel_poll = 0.0
     # Round-robin fairness: rotate through work types each iteration
     work_type_index = 0

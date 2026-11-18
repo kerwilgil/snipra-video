@@ -461,3 +461,63 @@ def test_storage_retention_removes_only_unprotected_terminal_jobs(monkeypatch, t
         assert not (config.settings.work_dir / removable.id).exists()
         assert (config.settings.work_dir / active.id).exists()
         assert (config.settings.work_dir / protected.id).exists()
+
+
+def test_retention_is_disabled_by_default_and_never_deletes_existing_jobs(monkeypatch, tmp_path):
+    """Regresion: la retencion borro carpetas antiguas al iniciar sin que el usuario la activara."""
+    from app.core import config
+
+    default_days = config.Settings.model_fields["storage_retention_days"].default
+    assert default_days == 0
+    init_db()
+    monkeypatch.setattr(config.settings, "storage_dir", tmp_path)
+    old = datetime.now(UTC) - timedelta(days=400)
+    with Session(engine) as session:
+        job = Job(
+            source_type=SourceType.url,
+            source_name="https://example.com/old.mp4",
+            status=JobStatus.done,
+            updated_at=old,
+        )
+        session.add(job)
+        session.commit()
+        path = config.settings.work_dir / job.id
+        path.mkdir(parents=True)
+        (path / "artifact.bin").write_bytes(b"1234")
+
+        result = cleanup_expired_job_files(session, default_days)
+
+        assert result == {"removed_paths": 0, "removed_bytes": 0}
+        assert (path / "artifact.bin").exists()
+
+
+def test_worker_loop_does_not_run_maintenance_at_startup(monkeypatch):
+    from unittest.mock import Mock
+
+    class StopLoop(Exception):
+        pass
+
+    for name in (
+        "init_db", "load_runtime_settings", "recover_claimed_jobs", "recover_operations",
+        "recover_compilations", "recover_asset_tasks",
+    ):
+        monkeypatch.setattr(runner, name, Mock(return_value=0))
+    # Start beyond one maintenance interval: an initial timestamp of zero would clean immediately.
+    start = runner.MAINTENANCE_INTERVAL_SECONDS + 100.0
+    monkeypatch.setattr(runner.time, "monotonic", Mock(side_effect=[
+        start, start, start + runner.MAINTENANCE_INTERVAL_SECONDS,
+    ]))
+    cleanup = Mock(return_value={"removed_paths": 0, "removed_bytes": 0})
+    monkeypatch.setattr(runner, "cleanup_expired_job_files", cleanup)
+    monkeypatch.setattr(runner.channel_watch, "poll_due_channels", Mock(return_value=0))
+
+    def work_round(index, types):
+        if cleanup.called:
+            raise StopLoop
+        return False, None, None, index
+
+    monkeypatch.setattr(runner, "_try_one_work_round", work_round)
+    monkeypatch.setattr(runner, "_sleep_if_idle", lambda done: cleanup.assert_not_called())
+    with pytest.raises(StopLoop):
+        runner._run_loop()
+    cleanup.assert_called_once()

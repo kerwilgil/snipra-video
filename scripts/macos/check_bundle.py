@@ -243,6 +243,13 @@ def check_forbidden(app: Path, report: Report) -> None:
                     bad.append(str((Path(dirpath) / name).relative_to(app)))
     report.add("Sin archivos prohibidos en el código propio (.env, cookies, BD, multimedia, Windows, .git)",
                "PASS" if not bad else "FAIL", ", ".join(bad[:8]) if bad else "limpio")
+    site = app / "Contents/Resources/python/lib/python3.11/site-packages"
+    gpl_in_process = sorted(
+        str(p.relative_to(app)) for pattern in ("libx264*", "libx265*", "libvidstab*", "libxvid*")
+        for p in site.rglob(pattern)
+    ) + ([str((site / "av/.dylibs").relative_to(app))] if (site / "av/.dylibs").exists() else [])
+    report.add("Sin bibliotecas GPL (PyAV/x264/x265) dentro del proceso Python del backend",
+               "PASS" if not gpl_in_process else "FAIL", ", ".join(gpl_in_process[:6]) if gpl_in_process else "limpio")
     windows_helpers = [str(p.relative_to(app)) for p in (app / "Contents/Resources/python").rglob("*.exe")]
     report.add("Sin ejecutables de Windows en el Python integrado", "PASS" if not windows_helpers else "FAIL",
                ", ".join(windows_helpers[:4]) if windows_helpers else "limpio")
@@ -290,7 +297,7 @@ def check_python(app: Path, report: Report) -> None:
     scratch = tempfile.mkdtemp(prefix="snipra-check-")
     env = {"PATH": "/usr/bin:/bin", "PYTHONNOUSERSITE": "1", "PYTHONDONTWRITEBYTECODE": "1",
            "PYTHONPATH": str(app / "Contents/Resources/app/backend"), "STORAGE_DIR": scratch}
-    code = ("import fastapi, uvicorn, sqlmodel, pydantic_settings, faster_whisper, ctranslate2, av, "
+    code = ("import fastapi, uvicorn, sqlmodel, pydantic_settings, faster_whisper, ctranslate2, "
             "yt_dlp, curl_cffi, httpx; import app.main, app.worker.runner; print('ok')")
     result = run([str(py), "-c", code], env=env)
     report.add("Python empaquetado importa dependencias y backend", "PASS" if result.stdout.strip() == "ok" else "FAIL",
